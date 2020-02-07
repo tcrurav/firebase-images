@@ -1,12 +1,22 @@
 window.onload = initialize;
 
+var bicycleId;
+
 function initialize() {
     document.getElementById("form-file-upload")
         .addEventListener("submit", uploadFile);
 
+    document.getElementById("remove-modal")
+        .addEventListener("click", removeBicycle);
+
     //downloadFile("Brasov.JPG");
 
     showBicycles();
+}
+
+function removeBicycle(){
+    var ref = firebase.database().ref("BicycleStore/bicycles/" + bicycleId);
+    ref.remove();
 }
 
 function showBicycles() {
@@ -19,7 +29,7 @@ function showBicycles() {
             newColumns +=
                 '<div class="col-sm-4">' +
                     '<button data-bicycle-id="' + key + '" type="button" class="btn btn-primary my-modal-button" data-toggle="modal" data-target="#myModal">' +
-                        '<img class="img-fluid" src="' + data[key].image_url +
+                        '<img data-bicycle-id="' + key + '" class="img-fluid" src="' + data[key].image_url +
                         '" alt="image"/>' +
                     '</button>' +
                 '</div>';
@@ -33,6 +43,14 @@ function showBicycles() {
     });
 
 
+}
+
+function clickedModalButton(event){
+    var clickedButton = event.target;
+
+    console.log(clickedButton);
+    bicycleId = clickedButton.getAttribute("data-bicycle-id");
+    console.log(bicycleId);
 }
 
 function uploadFile(event) {
